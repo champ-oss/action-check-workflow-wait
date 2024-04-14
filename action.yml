@@ -1,15 +1,18 @@
 name: action-check-workflow-wait
 description: https://github.com/champ-oss/action-check-workflow-wait
 inputs:
-  GH_TOKEN:
-    description: 'github token'
+  GH_INSTALLATION_ID:
+    description: 'github installation id'
     required: true
   GH_WORKFLOW:
     description: 'github workflow to wait on'
     required: true
-  GH_BRANCH:
-    description: 'github branch'
-    required: false
+  GH_APP_ID:
+    description: 'github app id'
+    required: true
+  GH_APP_PRIVATE_KEY:
+    description: 'github app private key'
+    required: true
 runs:
   using: "composite"
   steps:
