@@ -1,5 +1,4 @@
 import time
-from typing import Any
 import logging
 
 import github.Auth
@@ -90,7 +89,8 @@ def check_workflow_success(repo: Repository, workflow_name: str, branch_name: st
     branch = repo.get_branch(branch_name)
     workflow_runs = workflow.get_runs(branch=branch).get_page(0)
     for workflow_run in workflow_runs:
-        if workflow_run.id == run_id and workflow_run.status not in ['in_progress', 'queued', 'requested', 'pending', 'waiting']:
+        if workflow_run.id == run_id and workflow_run.status not in ['in_progress', 'queued',
+                                                                     'requested', 'pending', 'waiting']:
             return workflow_run.conclusion
         else:
             logger.info(f'Workflow run status: {workflow_run.status}')
