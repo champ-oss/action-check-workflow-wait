@@ -91,8 +91,9 @@ def check_workflow_success(repo: Repository, workflow_name: str, branch_name: st
     workflow_runs = workflow.get_runs(branch=branch).get_page(0)
     assert len(workflow_runs) > 0
 
+    # check status is completed, cancelled, failure, skipped
     for workflow_run in workflow_runs:
-        if workflow_run.id == run_id and workflow_run.status == 'completed':
+        if workflow_run.id == run_id and workflow_run.status in ['completed', 'cancelled', 'failure', 'skipped']:
             return workflow_run.conclusion
         else:
             logger.info(f'Workflow run status: {workflow_run.status}')
