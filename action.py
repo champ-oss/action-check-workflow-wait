@@ -74,9 +74,9 @@ def get_workflow_run_id(repo: Repository, workflow_name: str, branch: str) -> in
 
 
 @retry(wait=wait_fixed(15), stop=(stop_after_delay(900)))
-def check_workflow_success(repo: Repository, workflow_name: str, branch_name: str, run_id: int) -> str:
+def check_workflow_status(repo: Repository, workflow_name: str, branch_name: str, run_id: int) -> str:
     """
-    Check if all recent workflow runs were successful.
+    Check workflow runs status.
 
     :param run_id: run id
     :param repo: GitHub repository
@@ -112,17 +112,9 @@ def main():
     access_token = get_github_access_token(app_id, installation_id, 'private.pem')
     github_client = github.Github(access_token)
     repo = github_client.get_repo(gh_owner_repo)
-
-    # Get workflow id
-    logger.info('Getting workflow run id')
     workflow_run_id = get_workflow_run_id(repo, get_workflow_name, 'main')
-    # print GitHub output
     logger.info(f'Workflow run id: {workflow_run_id}')
-
-    # Get workflow check runs status
-    logger.info('Getting workflow check runs status')
-    workflow_check_runs_status = check_workflow_success(repo, get_workflow_name, 'main', workflow_run_id)
-    # print GitHub output
+    workflow_check_runs_status = check_workflow_status(repo, get_workflow_name, 'main', workflow_run_id)
     logger.info(f'Workflow check runs status: {workflow_check_runs_status}')
     if workflow_check_runs_status == 'success':
         logger.info('Workflow check runs status is successful')
