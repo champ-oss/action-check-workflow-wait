@@ -86,6 +86,7 @@ def get_workflow_status(repo: Repository, workflow_run_id: int) -> str:
     if workflow_run.status not in ['in_progress', 'queued', 'requested', 'pending', 'waiting']:
         return workflow_run.conclusion
     else:
+        logger.info(f'Workflow run status: {workflow_run.status}')
         raise Exception('Workflow is still running')
 
 
