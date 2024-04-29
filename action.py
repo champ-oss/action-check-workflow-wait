@@ -74,28 +74,19 @@ def get_workflow_run_id(repo: Repository, workflow_name: str, branch: str) -> in
 
 
 @retry(wait=wait_fixed(15), stop=(stop_after_delay(900)))
-def check_workflow_status(repo: Repository, workflow_name: str, branch_name: str, run_id: int) -> str:
+def get_workflow_status(repo: Repository, workflow_run_id: int) -> str:
     """
-    Check workflow runs status.
+    Get the status of the workflow.
 
-    :param run_id: run id
-    :param repo: GitHub repository
-    :param workflow_name: Name of GitHub workflow (usually file name)
-    :param branch_name: Branch that workflow is running from
-    :return:
+    :param repo: Repo to get workflow status
+    :param workflow_run_id: ID of the workflow run
+    :return: Status of the workflow
     """
-
-    workflow = repo.get_workflow(workflow_name)
-    branch = repo.get_branch(branch_name)
-    workflow_runs = workflow.get_runs(branch=branch).get_page(0)
-    for workflow_run in workflow_runs:
-        if workflow_run.id == run_id and workflow_run.status not in ['in_progress', 'queued',
-                                                                     'requested', 'pending', 'waiting']:
-            return workflow_run.conclusion
-        else:
-            logger.info(f'Workflow run status: {workflow_run.status}')
-            time.sleep(15)
-            raise Exception('Workflow run status is not completed')
+    workflow_run = repo.get_workflow_run(workflow_run_id)
+    if workflow_run.status not in ['in_progress', 'queued', 'requested', 'pending', 'waiting']:
+        return workflow_run.conclusion
+    else:
+        raise Exception('Workflow is still running')
 
 
 def main():
@@ -114,13 +105,12 @@ def main():
     repo = github_client.get_repo(gh_owner_repo)
     workflow_run_id = get_workflow_run_id(repo, get_workflow_name, 'main')
     logger.info(f'Workflow run id: {workflow_run_id}')
-    workflow_check_runs_status = check_workflow_status(repo, get_workflow_name, 'main', workflow_run_id)
-    logger.info(f'Workflow check runs status: {workflow_check_runs_status}')
+    workflow_check_runs_status = get_workflow_status(repo, workflow_run_id)
     if workflow_check_runs_status == 'success':
-        logger.info('Workflow check runs status is successful')
+        logger.info('Workflow run successfully')
     else:
-        logger.error('Workflow check runs status is not successful')
-        raise Exception('Workflow check runs status is not successful')
+        logger.error('Workflow run failed')
+        raise Exception('Workflow run failed')
 
 
 if __name__ == '__main__':
