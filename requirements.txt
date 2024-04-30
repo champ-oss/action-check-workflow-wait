@@ -22,3 +22,4 @@ flake8-SQL==0.4.1
 flake8-use-pathlib==0.3.0
 flake8-variables-names==0.0.6
 coverage==7.4.4
+pytest==8.1.1
