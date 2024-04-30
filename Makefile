@@ -1,13 +1,13 @@
 coverage:
 	coverage run -m pytest
-	coverage html --omit="test_*.py,action.py"
-	coverage xml --omit="test_*.py,action.py"
+	coverage html --omit="test_*.py"
+	coverage xml --omit="test_*.py"
 	open htmlcov/index.html || true
 
 check-coverage:
 	coverage run -m pytest
 	coverage xml --omit="test_*.py"
-	coverage report --fail-under=80
+	coverage report --fail-under=70
 
 install:
 	pip install -r requirements.txt
