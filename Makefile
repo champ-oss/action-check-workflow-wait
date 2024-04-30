@@ -1,7 +1,7 @@
 coverage:
 	coverage run -m pytest
-	coverage html --omit="test_*.py"
-	coverage xml --omit="test_*.py"
+	coverage html --omit="test_*.py,action.py"
+	coverage xml --omit="test_*.py,action.py"
 	open htmlcov/index.html || true
 
 check-coverage:
