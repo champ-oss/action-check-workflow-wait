@@ -1,0 +1,22 @@
+name: test
+
+on:
+  workflow_dispatch:
+  push:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4.1.2
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+          cache: 'pip'
+      - run: make install
+      - run: make lint
+        if: ${{ always() }}
+      - run: make check-coverage
+        if: ${{ always() }}
